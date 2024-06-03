@@ -6,8 +6,5 @@ import (
 
 func main() {
 	db := dbpart.ConnectDB()
-	//defer db.Close()
-	//dbpart.CreateTestsTabel(db)
-	dbpart.CreateDeliveryTable(db)
-	dbpart.CreatePaymentTable(db)
+	dbpart.CreateAllTables(db)
 }

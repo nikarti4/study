@@ -77,24 +77,57 @@ func CreatePaymentTable(db *sql.DB) {
 
 func CreateItemsTable(db *sql.DB) {
 
+	q := `CREATE TABLE IF NOT EXISTS items (
+		chrt_id BIGINT PRIMARY KEY,
+		track_number VARCHAR(100) NOT NULL,
+		price BIGINT NOT NULL,
+		rid VARCHAR(100) NOT NULL,
+		name VARCHAR(100) NOT NULL,
+		sale BIGINT NOT NULL,
+		size VARCHAR(100) NOT NULL,
+		total_price BIGINT NOT NULL,
+		nm_id BIGINT NOT NULL,
+		brand VARCHAR(100) NOT NULL,
+		status BIGINT NOT NULL
+	)`
+
+	_, err := db.Exec(q)
+	CheckFatal(err)
+	fmt.Println("Created table items!")
 }
 
-func CreateTestsTabel(db *sql.DB) {
-	q := `CREATE TABLE IF NOT EXISTS tests (
-		id SERIAL PRIMARY KEY,
-		name VARCHAR(100) NOT NULL
+func CreateOrdersTable(db *sql.DB) {
+
+	q := `CREATE TABLE IF NOT EXISTS orders (
+			order_uid VARCHAR(100) PRIMARY KEY,
+			track_number VARCHAR(100),
+			entry VARCHAR(100) NOT NULL,
+			locale VARCHAR(100) NOT NULL,
+			internal_signature VARCHAR(100),
+			customer_id VARCHAR(100) NOT NULL,
+			delivery_service VARCHAR(100) NOT NULL,
+			shardkey VARCHAR(100) NOT NULL,
+			sm_id BIGINT NOT NULL,
+			date_created VARCHAR(100) NOT NULL,
+			oof_shard VARCHAR(100) NOT NULL
 		)`
 
 	_, err := db.Exec(q)
-
 	CheckFatal(err)
+	fmt.Println("Created table orders!")
+}
 
-	fmt.Println("Created table tests")
+func CreateAllTables(db *sql.DB) {
+	CreateDeliveryTable(db)
+	CreatePaymentTable(db)
+	CreateItemsTable(db)
+	CreateOrdersTable(db)
 }
 
 /*
 func SelectAll(db *sql.DB, table string) {
 	param := fmt.Sprintf("SELECT * FROM %s", table)
+	rows, err := db.Query(`SELECT * FROM table`)
 	CheckFatal(err)
 
 	defer rows.Close()
