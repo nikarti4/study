@@ -1,4 +1,4 @@
-package main
+package dbpart
 
 import (
 	"database/sql"
@@ -9,44 +9,92 @@ import (
 )
 
 const (
-	host = "localhost"
-	port = 5432
-	user = "postgres"
+	host     = "localhost"
+	port     = 5432
+	user     = "postgres"
 	password = "new_pass"
-	dbname = "my_test"
+	dbname   = "my_test"
 )
 
-
-func main() {
-
+func ConnectDB() *sql.DB {
 	// конфигурации БД
 	conf := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 	// попытка открытия БД
 	db, err := sql.Open("postgres", conf)
-	defer db.Close()
 
 	// если не удалось открыть - вывести лог
 	CheckFatal(err)
 
 	// проверка работы БД, лог если всё плохо
 	err = db.Ping()
+	CheckFatal(err)
+
+	fmt.Println("Connected to DB!")
+
+	return db
+}
+
+func CheckFatal(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func CreateDeliveryTable(db *sql.DB) {
+	q := `CREATE TABLE IF NOT EXISTS delivery (
+		name VARCHAR(100) NOT NULL,
+		phone VARCHAR(100) PRIMARY KEY,
+		zip VARCHAR(100) NOT NULL,
+		city VARCHAR(100) NOT NULL,
+		address VARCHAR(100) NOT NULL,
+		region VARCHAR(100) NOT NULL,
+		email VARCHAR(100) NOT NULL
+	)`
+
+	_, err := db.Exec(q)
+	CheckFatal(err)
+	fmt.Println("Created table delivery!")
+}
+
+func CreatePaymentTable(db *sql.DB) {
+	q := `CREATE TABLE IF NOT EXISTS payment (
+		transaction VARCHAR(100) PRIMARY KEY,
+		request_id VARCHAR(100),
+		currency VARCHAR(100) NOT NULL,
+		provider VARCHAR(100) NOT NULL,
+		amount BIGINT NOT NULL,
+		payment_dt BIGINT NOT NULL,
+		bank VARCHAR(100) NOT NULL,
+		delivery_cost BIGINT NOT NULL,
+		goods_total BIGINT NOT NULL,
+		custom_fee BIGINT NOT NULL
+	)`
+
+	_, err := db.Exec(q)
+	CheckFatal(err)
+	fmt.Println("Created table payment!")
+}
+
+func CreateItemsTable(db *sql.DB) {
+
+}
+
+func CreateTestsTabel(db *sql.DB) {
+	q := `CREATE TABLE IF NOT EXISTS tests (
+		id SERIAL PRIMARY KEY,
+		name VARCHAR(100) NOT NULL
+		)`
+
+	_, err := db.Exec(q)
 
 	CheckFatal(err)
 
-	fmt.Println("Connected!")
+	fmt.Println("Created table tests")
+}
 
-	CreateTestsTabel(db)
-
-	/*
-	insert := `INSERT INTO "tests" (id, name) values(2, 'Ann')`
-
-	_, err = db.Exec(insert)
-	CheckFatal(err)
-
-	fmt.Println("Inserted!")
-	*/
-
-	rows, err := db.Query(`SELECT * FROM tests`)
+/*
+func SelectAll(db *sql.DB, table string) {
+	param := fmt.Sprintf("SELECT * FROM %s", table)
 	CheckFatal(err)
 
 	defer rows.Close()
@@ -58,31 +106,19 @@ func main() {
 
 	 	err = rows.Scan(&age, &name)
 	 	CheckFatal(err)
-	 
+
 	 	fmt.Println(age, name)
 	}
 
 	CheckFatal(err)
 
-	fmt.Println("Selected!")
+	fmt.Println("Selected from %v", table)
 
+	//insert := `INSERT INTO "tests" (id, name) values(2, 'Ann')`
+
+	//_, err = db.Exec(insert)
+	//CheckFatal(err)
+
+	//fmt.Println("Inserted!")
 }
-
-func CheckFatal(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func CreateTestsTabel(db *sql.DB) {
-	q := `CREATE TABLE IF NOT EXISTS tests (
-		id SERIAL PRIMARY KEY,
-		name VARCHAR(100) NOT NULL
-		)`
-	
-	_, err := db.Exec(q)
-
-	CheckFatal(err)
-
-	fmt.Println("Created table tests")
-}
+*/

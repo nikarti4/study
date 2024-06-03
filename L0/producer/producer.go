@@ -16,7 +16,7 @@ func main() {
 	// цикл посылки сообщений
 	for i := 1; ; i++ {
 		// имя канала и сообщения
-		p.Publish("msg", []byte("Msg " + strconv.Itoa(i)))
+		p.Publish("msg", []byte("Msg "+strconv.Itoa(i)))
 		time.Sleep(2 * time.Second)
 	}
 
