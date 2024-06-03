@@ -12,16 +12,15 @@ const (
 	host = "localhost"
 	port = 5432
 	user = "postgres"
-	password = ""
-	dbname = "wbl0"
+	password = "new_pass"
+	dbname = "my_test"
 )
 
 
 func main() {
 
 	// конфигурации БД
-	//conf := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
-	conf := "postgres://postgres:@localhost:5432/tests?sslmode=disable"
+	conf := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 	// попытка открытия БД
 	db, err := sql.Open("postgres", conf)
 	defer db.Close()
@@ -38,29 +37,34 @@ func main() {
 
 	CreateTestsTabel(db)
 
+	/*
+	insert := `INSERT INTO "tests" (id, name) values(2, 'Ann')`
 
-	// insert := `INSERT INTO "test" (id, name) values(1, 'Jonh')`
+	_, err = db.Exec(insert)
+	CheckFatal(err)
 
-	// _, err = db.Exec(insert)
-	// CheckFatal(err)
+	fmt.Println("Inserted!")
+	*/
 
-	// rows, err := db.Query(`SELECT * FROM payment`)
-	// CheckFatal(err)
+	rows, err := db.Query(`SELECT * FROM tests`)
+	CheckFatal(err)
 
-	// defer rows.Close()
+	defer rows.Close()
 
-	// for rows.Next() {
+	for rows.Next() {
 
-	// 	var name string
-	// 	var age int
+	 	var name string
+	 	var age int
 
-	// 	err = rows.Scan(&name, &age)
-	// 	CheckFatal(err)
+	 	err = rows.Scan(&age, &name)
+	 	CheckFatal(err)
 	 
-	// 	fmt.Println(name, age)
-	// }
+	 	fmt.Println(age, name)
+	}
 
-	// CheckFatal(err)
+	CheckFatal(err)
+
+	fmt.Println("Selected!")
 
 }
 
@@ -79,4 +83,6 @@ func CreateTestsTabel(db *sql.DB) {
 	_, err := db.Exec(q)
 
 	CheckFatal(err)
+
+	fmt.Println("Created table tests")
 }
