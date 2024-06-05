@@ -1,4 +1,4 @@
-module example.com/dbpart
+module L0/dbpart
 
 go 1.21.1
 

@@ -1,6 +1,6 @@
 package model
 
-type delivery_t struct {
+type Delivery_t struct {
 	Name    string `json:"name"`
 	Phone   string `json:"phone"`
 	Zip     string `json:"zip"`

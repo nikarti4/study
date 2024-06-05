@@ -1,6 +1,6 @@
 package model
 
-type items_t struct {
+type Items_t struct {
 	Chrt_id      uint    `json:"chrt_id"`
 	Track_number string  `json:"track_number"`
 	Price        float64 `json:"price"`

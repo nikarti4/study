@@ -3,7 +3,8 @@ package dbpart
 import (
 	"database/sql"
 	"fmt"
-	"log"
+
+	"L0/common"
 
 	_ "github.com/lib/pq"
 )
@@ -23,22 +24,18 @@ func ConnectDB() *sql.DB {
 	db, err := sql.Open("postgres", conf)
 
 	// если не удалось открыть - вывести лог
-	CheckFatal(err)
+	common.CheckFatal(err)
 
 	// проверка работы БД, лог если всё плохо
 	err = db.Ping()
-	CheckFatal(err)
+	common.CheckFatal(err)
 
 	fmt.Println("Connected to DB!")
 
 	return db
 }
 
-func CheckFatal(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
+
 
 func CreateDeliveryTable(db *sql.DB) {
 	q := `CREATE TABLE IF NOT EXISTS delivery (
@@ -52,7 +49,7 @@ func CreateDeliveryTable(db *sql.DB) {
 	)`
 
 	_, err := db.Exec(q)
-	CheckFatal(err)
+	common.CheckFatal(err)
 	fmt.Println("Created table delivery!")
 }
 
@@ -71,7 +68,7 @@ func CreatePaymentTable(db *sql.DB) {
 	)`
 
 	_, err := db.Exec(q)
-	CheckFatal(err)
+	common.CheckFatal(err)
 	fmt.Println("Created table payment!")
 }
 
@@ -92,7 +89,7 @@ func CreateItemsTable(db *sql.DB) {
 	)`
 
 	_, err := db.Exec(q)
-	CheckFatal(err)
+	common.CheckFatal(err)
 	fmt.Println("Created table items!")
 }
 
@@ -113,7 +110,7 @@ func CreateOrdersTable(db *sql.DB) {
 		)`
 
 	_, err := db.Exec(q)
-	CheckFatal(err)
+	common.CheckFatal(err)
 	fmt.Println("Created table orders!")
 }
 

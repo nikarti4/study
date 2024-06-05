@@ -1,6 +1,6 @@
 package model
 
-type order_t struct {
+type Order_t struct {
 	Order_uid          string     `json:"order_uid"`
 	Track_number       string     `json:"track_number"`
 	Entry              string     `json:"entry"`

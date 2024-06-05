@@ -1,6 +1,6 @@
 package model
 
-type payment_t struct {
+type Payment_t struct {
 	Transaction   string  `json:"transaction"`
 	Request_id    string  `json:"request_id"`
 	Currency      string  `json:"currency"`
