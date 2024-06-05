@@ -4,9 +4,9 @@ type Order_t struct {
 	Order_uid          string     `json:"order_uid"`
 	Track_number       string     `json:"track_number"`
 	Entry              string     `json:"entry"`
-	Delivery           delivery_t `json:"delivery"`
-	Payment            payment_t  `json:"payment"`
-	Items              []items_t  `json:"items"`
+	Delivery           Delivery_t `json:"delivery"`
+	Payment            Payment_t  `json:"payment"`
+	Items              []Items_t  `json:"items"`
 	Locale             string     `json:"locale"`
 	Internal_signature string     `json:"internal_signature"`
 	Customer_id        string     `json:"customer_id"`

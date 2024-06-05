@@ -35,8 +35,6 @@ func ConnectDB() *sql.DB {
 	return db
 }
 
-
-
 func CreateDeliveryTable(db *sql.DB) {
 	q := `CREATE TABLE IF NOT EXISTS delivery (
 		name VARCHAR(100) NOT NULL,

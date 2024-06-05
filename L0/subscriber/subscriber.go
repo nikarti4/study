@@ -1,22 +1,30 @@
-package main
+package subscriber
 
 import (
+	"encoding/json"
 	"fmt"
-	"sync"
+
+	"L0/common"
+	"L0/model"
 
 	stan "github.com/nats-io/stan.go"
 )
 
-func main() {
+func ConsumeOrder(cn stan.Conn, chanName string) {
 
-	s, _ := stan.Connect("prod", "s1")
-	defer s.Close()
+	var order model.Order_t
+	//var s stan.Subscription
+	//s, err := stan.Connect("prod", "s1")
+	//common.CheckFatal(err)
+	//defer s.Close()
 
-	s.Subscribe("msg", func(m *stan.Msg) {
-		fmt.Printf("Receive: %s\n", string(m.Data))
+	_, err := cn.Subscribe(chanName, func(m *stan.Msg) {
+		err := json.Unmarshal(m.Data, &order)
+		common.CheckFatal(err)
+		fmt.Println("Get something from NATS!")
+		fmt.Println(string(m.Data))
 	})
 
-	w := sync.WaitGroup{}
-	w.Add(1)
-	w.Wait()
+	common.CheckFatal(err)
+
 }
