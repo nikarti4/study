@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"L0/common"
+	"L0/model"
 
 	_ "github.com/lib/pq"
 )
@@ -48,7 +49,7 @@ func CreateDeliveryTable(db *sql.DB) {
 
 	_, err := db.Exec(q)
 	common.CheckFatal(err)
-	fmt.Println("Created table delivery!")
+	//fmt.Println("Created table delivery!")
 }
 
 func CreatePaymentTable(db *sql.DB) {
@@ -67,7 +68,7 @@ func CreatePaymentTable(db *sql.DB) {
 
 	_, err := db.Exec(q)
 	common.CheckFatal(err)
-	fmt.Println("Created table payment!")
+	//fmt.Println("Created table payment!")
 }
 
 func CreateItemsTable(db *sql.DB) {
@@ -88,7 +89,7 @@ func CreateItemsTable(db *sql.DB) {
 
 	_, err := db.Exec(q)
 	common.CheckFatal(err)
-	fmt.Println("Created table items!")
+	//fmt.Println("Created table items!")
 }
 
 func CreateOrdersTable(db *sql.DB) {
@@ -109,7 +110,7 @@ func CreateOrdersTable(db *sql.DB) {
 
 	_, err := db.Exec(q)
 	common.CheckFatal(err)
-	fmt.Println("Created table orders!")
+	//fmt.Println("Created table orders!")
 }
 
 func CreateAllTables(db *sql.DB) {
@@ -117,36 +118,166 @@ func CreateAllTables(db *sql.DB) {
 	CreatePaymentTable(db)
 	CreateItemsTable(db)
 	CreateOrdersTable(db)
+	fmt.Println("All tables are good!")
 }
 
-/*
-func SelectAll(db *sql.DB, table string) {
-	param := fmt.Sprintf("SELECT * FROM %s", table)
-	rows, err := db.Query(`SELECT * FROM table`)
-	CheckFatal(err)
+func InsertOrder(db *sql.DB, order model.Order_t) {
+	insert := `INSERT INTO orders (
+			order_uid,
+			track_number,
+			entry,
+			locale,
+			internal_signature,
+			customer_id,
+			delivery_service,
+			shardkey,
+			sm_id,
+			date_created,
+			oof_shard 
+		)
+		VALUES (
+			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11 
+		)`
+
+	_, err := db.Exec(insert,
+		order.Order_uid, order.Track_number, order.Entry, order.Locale,
+		order.Internal_signature, order.Customer_id, order.Delivery_service,
+		order.Shardkey, order.Sm_id, order.Date_created, order.Oof_shard,
+	)
+
+	//common.CheckFatal(err)
+	if err != nil {
+		fmt.Println("INSERT in orders FAIL - pk not uniq!")
+	} else {
+
+		fmt.Println("INSERT in orders complete!")
+	}	
+
+	// now here
+	InsertDelivery(db, order.Delivery)
+	InsertPayment(db, order.Payment)
+	InsertItems(db, order.Items)
+
+
+}
+
+func InsertDelivery(db *sql.DB, delivery model.Delivery_t) {
+	insert := `INSERT INTO delivery (
+			name,
+			phone,
+			zip,
+			city,
+			address,
+			region,
+			email
+		)
+		VALUES (
+			$1, $2, $3, $4, $5, $6, $7
+		)`
+
+	_, err := db.Exec(insert,
+		delivery.Name, delivery.Phone, delivery.Zip, delivery.City,
+		delivery.Address, delivery.Region, delivery.Email,
+	)
+
+	//common.CheckFatal(err)
+	if err != nil {
+		fmt.Println("INSERT in delivery FAIL - pk not uniq!")
+	} else {
+		fmt.Println("INSERT in delivery complete!")
+	}	
+}
+
+func InsertPayment(db *sql.DB, payment model.Payment_t) {
+	insert := `INSERT INTO payment (
+			transaction,
+			request_id,
+			currency,
+			provider,
+			amount,
+			payment_dt,
+			bank,
+			delivery_cost,
+			goods_total,
+			custom_fee
+		)
+		VALUES (
+			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10
+		)`
+
+	_, err := db.Exec(insert,
+		payment.Transaction, payment.Request_id, payment.Currency, payment.Provider,
+		payment.Amount, payment.Payment_dt, payment.Bank, payment.Delivery_cost,
+		payment.Goods_total, payment.Custom_fee,
+	)
+
+	//common.CheckFatal(err)
+	if err != nil {
+		fmt.Println("INSERT in payment FAIL - pk not uniq!")
+	} else {
+		fmt.Println("INSERT in payment complete!")
+	}	
+}
+
+func InsertItems(db *sql.DB, items [] model.Items_t) {
+	insert := `INSERT INTO items (
+			chrt_id,
+			track_number,
+			price,
+			rid,
+			name,
+			sale,
+			size,
+			total_price,
+			nm_id,
+			brand,
+			status
+		)
+		VALUES (
+			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
+		)`
+	
+	for _, item :=  range items {
+		_, err := db.Exec(insert,
+			item.Chrt_id, item.Track_number, item.Price, item.Name, item.Sale,
+			item.Size, item.Total_price, item.Nm_id, item.Brand, item.Status,
+		)
+
+		//common.CheckFatal(err)
+		if err != nil {
+			fmt.Println("INSERT in items FAIL - pk not uniq!")
+		} else {
+			fmt.Println("INSERT in items complete!")
+		}
+	}
+}
+
+func GetOrderByID(db *sql.DB, order_uid string) (*model.Order_t, error) {
+	rows, err := db.Query(`
+		SELECT * 
+		FROM orders
+		WHERE order_uid = $1`, order_uid)
 
 	defer rows.Close()
+	
+	if err != nil {
+		return nil, err
+	}
+
+	order := &model.Order_t{}
 
 	for rows.Next() {
 
-	 	var name string
-	 	var age int
-
-	 	err = rows.Scan(&age, &name)
-	 	CheckFatal(err)
-
-	 	fmt.Println(age, name)
+		err = rows.Scan(
+			&order.Order_uid, &order.Track_number, &order.Entry, &order.Locale,
+			&order.Internal_signature, &order.Customer_id, &order.Delivery_service,
+			&order.Shardkey, &order.Sm_id, &order.Date_created, &order.Oof_shard,	
+		)
+		
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	CheckFatal(err)
-
-	fmt.Println("Selected from %v", table)
-
-	//insert := `INSERT INTO "tests" (id, name) values(2, 'Ann')`
-
-	//_, err = db.Exec(insert)
-	//CheckFatal(err)
-
-	//fmt.Println("Inserted!")
+	return order, nil
 }
-*/

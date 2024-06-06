@@ -10,8 +10,6 @@ import (
 
 	//"net/http"
 
-	//"example.com/model"
-
 	//"github.com/gin-gonic/gin"
 	stan "github.com/nats-io/stan.go"
 )
@@ -28,13 +26,14 @@ func main() {
 
 	chanName := "orders"
 
-	subscriber.ConsumeOrder(ns, chanName)
+	subscriber.ConsumeAndSaveOrder(ns, chanName, db)
 
 	producer.ProduceOrder(ns, chanName)
 
-	// router := gin.Default();
-	// router.GET("/orders/:id", GetOrdersByID)
 
-	// router.Run("localhost:8080")
+	//router := gin.Default();
+	//router.GET("/orders/:id", GetOrderByID)
+
+	//router.Run("localhost:8080")
 
 }

@@ -1,3 +1,3 @@
-module example.com/model
+module model
 
 go 1.22.1
