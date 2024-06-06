@@ -6,12 +6,13 @@ import (
 	"L0/dbpart"
 	"L0/producer"
 	"L0/subscriber"
+	"L0/http_handlers"
 
 	//"fmt"
 
 	//"net/http"
 
-	//"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
 	stan "github.com/nats-io/stan.go"
 )
 
@@ -24,8 +25,6 @@ func main() {
 
 	ns, err := stan.Connect("prod", "u1")
 
-	//fmt.Printf("%T", ns)
-
 	common.CheckFatal(err)
 
 	chanName := "orders"
@@ -34,9 +33,9 @@ func main() {
 
 	producer.ProduceOrder(ns, chanName)
 
-	//router := gin.Default();
-	//router.GET("/orders/:id", GetOrderByID)
+	router := gin.Default();
+	router.GET("/orders/:id", http_handlers.GetServerOrderByID(c))
 
-	//router.Run("localhost:8080")
+	router.Run("localhost:8080")
 
 }

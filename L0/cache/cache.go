@@ -29,7 +29,7 @@ func (c *My_cache) Write(order model.Order_t) {
 	fmt.Println("Write data in cache!")
 }
 
-func (c *My_cache) Read(order_uid string) model.Order_t {
+func (c *My_cache) Read(order_uid string) (model.Order_t, bool) {
 
 	c.rwmu.RLock()
 	defer c.rwmu.RUnlock()
@@ -42,22 +42,8 @@ func (c *My_cache) Read(order_uid string) model.Order_t {
 		fmt.Println("No such data in cache!")
 	}
 
-	return order
+	return order, is_ok
 }
-
-/*
-func (c *My_cache) ReadAllOrdersFromDB() []model.Order_t {
-	var out []model.Order_t
-
-	c.rwmu.RLock()
-	defer c.rwmu.RUnlock()
-
-	for _, order := range value {
-		out = append(out, value.(model.Order_t))
-	}
-
-	return out
-} */
 
 func (c *My_cache) RestoreCache(db *sql.DB) {
 	orders, err := dbpart.GetAllOrders(db)
