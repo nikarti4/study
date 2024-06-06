@@ -1,13 +1,13 @@
 package cache
 
 import (
-
-	"sync"
-	"fmt"
 	"database/sql"
+	"fmt"
+	"sync"
 
 	"L0/model"
-	
+	"L0/common"
+	"L0/dbpart"
 )
 
 type My_cache struct {
@@ -17,7 +17,7 @@ type My_cache struct {
 
 func Init() *My_cache {
 	dat := make(map[string]model.Order_t)
-	out := My_cache{ data: dat }
+	out := My_cache{data: dat}
 	fmt.Println("Init cache!")
 	return &out
 }
@@ -45,29 +45,28 @@ func (c *My_cache) Read(order_uid string) model.Order_t {
 	return order
 }
 
+/*
 func (c *My_cache) ReadAllOrdersFromDB() []model.Order_t {
 	var out []model.Order_t
-	
+
 	c.rwmu.RLock()
 	defer c.rwmu.RUnlock()
 
-	for _, order := range value interface{} {
+	for _, order := range value {
 		out = append(out, value.(model.Order_t))
 	}
 
-
-
 	return out
-}
+} */
 
 func (c *My_cache) RestoreCache(db *sql.DB) {
-	orders, err := db.ReadAllOrdersFromDB()
+	orders, err := dbpart.GetAllOrders(db)
 	common.CheckFatal(err)
 
 	for _, order := range orders {
 		c.Write(order)
+		//fmt.Println(order)
 	}
+
+	fmt.Println("Cache restored!")
 }
-
-
-

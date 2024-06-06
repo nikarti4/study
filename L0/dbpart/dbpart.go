@@ -118,7 +118,7 @@ func CreateOrdersItemsTable(db *sql.DB) {
 		order_uid VARCHAR(100),
 		chrt_id BIGINT
 	)`
-	
+
 	_, err := db.Exec(q)
 	common.CheckFatal(err)
 }
@@ -162,13 +162,12 @@ func InsertOrder(db *sql.DB, order model.Order_t) {
 	} else {
 
 		fmt.Println("INSERT in orders complete!")
-	}	
+	}
 
 	// now here
 	InsertDelivery(db, order.Delivery)
 	InsertPayment(db, order.Payment)
 	InsertItems(db, order.Items)
-
 
 }
 
@@ -196,7 +195,7 @@ func InsertDelivery(db *sql.DB, delivery model.Delivery_t) {
 		fmt.Printf("INSERT in delivery FAIL - %v\n", err)
 	} else {
 		fmt.Println("INSERT in delivery complete!")
-	}	
+	}
 }
 
 func InsertPayment(db *sql.DB, payment model.Payment_t) {
@@ -227,7 +226,7 @@ func InsertPayment(db *sql.DB, payment model.Payment_t) {
 		fmt.Printf("INSERT in payment FAIL - %v\n", err)
 	} else {
 		fmt.Println("INSERT in payment complete!")
-	}	
+	}
 }
 
 func InsertItems(db *sql.DB, items []model.Items_t) {
@@ -247,10 +246,10 @@ func InsertItems(db *sql.DB, items []model.Items_t) {
 		VALUES (
 			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
 		)`
-	
-	for _, item :=  range items {
+
+	for _, item := range items {
 		_, err := db.Exec(insert,
-			item.Chrt_id, item.Track_number, item.Price, item.Rid, item.Name, item.Sale, 
+			item.Chrt_id, item.Track_number, item.Price, item.Rid, item.Name, item.Sale,
 			item.Size, item.Total_price, item.Nm_id, item.Brand, item.Status,
 		)
 
@@ -270,7 +269,7 @@ func GetOrderByID(db *sql.DB, order_uid string) (*model.Order_t, error) {
 		WHERE order_uid = $1`, order_uid)
 
 	defer rows.Close()
-	
+
 	if err != nil {
 		return nil, err
 	}
@@ -282,13 +281,46 @@ func GetOrderByID(db *sql.DB, order_uid string) (*model.Order_t, error) {
 		err = rows.Scan(
 			&order.Order_uid, &order.Track_number, &order.Entry, &order.Locale,
 			&order.Internal_signature, &order.Customer_id, &order.Delivery_service,
-			&order.Shardkey, &order.Sm_id, &order.Date_created, &order.Oof_shard,	
+			&order.Shardkey, &order.Sm_id, &order.Date_created, &order.Oof_shard,
 		)
-		
+
 		if err != nil {
 			return nil, err
 		}
 	}
 
 	return order, nil
+}
+
+func GetAllOrders(db *sql.DB) ([]model.Order_t, error) {
+	var orders []model.Order_t
+
+	rows, err := db.Query(`
+	SELECT * 
+	FROM orders`)
+
+	defer rows.Close()
+
+	if err != nil {
+		return nil, err
+	}
+
+	order := model.Order_t{}
+
+	for rows.Next() {
+
+		err = rows.Scan(
+			&order.Order_uid, &order.Track_number, &order.Entry, &order.Locale,
+			&order.Internal_signature, &order.Customer_id, &order.Delivery_service,
+			&order.Shardkey, &order.Sm_id, &order.Date_created, &order.Oof_shard,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		orders = append(orders, order)
+	}
+
+	return orders, nil
 }
