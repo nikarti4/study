@@ -4,9 +4,9 @@ import (
 	"L0/cache"
 	"L0/common"
 	"L0/dbpart"
+	"L0/http_handlers"
 	"L0/producer"
 	"L0/subscriber"
-	"L0/http_handlers"
 
 	//"fmt"
 
@@ -33,7 +33,7 @@ func main() {
 
 	producer.ProduceOrder(ns, chanName)
 
-	router := gin.Default();
+	router := gin.Default()
 	router.GET("/orders/:id", http_handlers.GetServerOrderByID(c))
 
 	router.Run("localhost:8080")

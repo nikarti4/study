@@ -1,11 +1,10 @@
 package producer
 
 import (
-	//"strconv"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	//"time"
+	"time"
 
 	"L0/common"
 	"L0/model"
@@ -25,7 +24,7 @@ func ProduceOrder(cn stan.Conn, chanName string) {
 	err = cn.Publish(chanName, []byte(strOrder))
 	common.CheckFatal(err)
 	//fmt.Println(string(strOrder))
-	//time.Sleep(2 * time.Second)
+	time.Sleep(2 * time.Second)
 }
 
 func ReadOrderFromFile(path string) (out model.Order_t, err error) {

@@ -7,9 +7,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetServerOrderByID(cache *cache.My_cache) func (c *gin.Context) {
+func GetServerOrderByID(cache *cache.My_cache) func(c *gin.Context) {
 
-	f := func (c *gin.Context) {
+	f := func(c *gin.Context) {
 		id := c.Param("id")
 		orderFromCache, is_ok := cache.Read(id)
 
