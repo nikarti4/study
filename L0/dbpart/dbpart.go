@@ -179,7 +179,8 @@ func InsertOrder(db *sql.DB, order model.Order_t) {
 	InsertDelivery(db, order.Delivery)
 	InsertPayment(db, order.Payment)
 	InsertItems(db, order.Items)
-
+	InsertOrdersItems(db, order)
+	InsertOrdersDelivery(db, order)
 }
 
 func InsertDelivery(db *sql.DB, delivery model.Delivery_t) {
@@ -272,6 +273,55 @@ func InsertItems(db *sql.DB, items []model.Items_t) {
 		}
 	}
 }
+
+func InsertOrdersItems(db *sql.DB, order model.Order_t) {
+	insert := `INSERT INTO orders_items (
+		order_uid,
+		chrt_id
+	) VALUES (
+		$1, $2
+	)`
+
+	//for _, elem := range order {
+
+		for _, item := range order.Items {
+			_, err := db.Exec(insert,
+				order.Order_uid, item.Chrt_id,
+			)
+			if err != nil {
+				fmt.Printf("INSERT in orders_items FAIL - %v\n", err)
+			} else {
+				fmt.Println("INSERT in orders_items complete!")
+			}
+		}
+
+	//}
+}
+
+
+func InsertOrdersDelivery(db *sql.DB, order model.Order_t) {
+	insert := `INSERT INTO orders_delivery (
+		order_uid,
+		phone
+	) VALUES (
+		$1, $2
+	)`
+
+	//for _, elem := range order {
+			_, err := db.Exec(insert,
+			order.Order_uid, order.Delivery.Phone,
+		)
+
+		if err != nil {
+			fmt.Printf("INSERT in orders_delivery FAIL - %v\n", err)
+		} else {
+			fmt.Println("INSERT in orders_delivery complete!")
+		}
+	//}
+
+
+}
+
 
 func GetOrderByID(db *sql.DB, order_uid string) (*model.Order_t, error) {
 	rows, err := db.Query(`
