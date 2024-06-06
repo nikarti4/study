@@ -5,8 +5,9 @@ import (
 	"L0/dbpart"
 	"L0/producer"
 	"L0/subscriber"
+	"L0/cache"
 
-	//"fmt"
+	"fmt"
 
 	//"net/http"
 
@@ -16,6 +17,8 @@ import (
 
 func main() {
 	db := dbpart.ConnectDB()
+	c := cache.Init()
+
 	dbpart.CreateAllTables(db)
 
 	ns, err := stan.Connect("prod", "u1")
@@ -26,10 +29,9 @@ func main() {
 
 	chanName := "orders"
 
-	subscriber.ConsumeAndSaveOrder(ns, chanName, db)
-
+	subscriber.ConsumeAndSaveOrder(ns, chanName, db, c)
+	
 	producer.ProduceOrder(ns, chanName)
-
 
 	//router := gin.Default();
 	//router.GET("/orders/:id", GetOrderByID)

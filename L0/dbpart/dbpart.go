@@ -113,11 +113,22 @@ func CreateOrdersTable(db *sql.DB) {
 	//fmt.Println("Created table orders!")
 }
 
+func CreateOrdersItemsTable(db *sql.DB) {
+	q := `CREATE TABLE IF NOT EXISTS orders_items (
+		order_uid VARCHAR(100),
+		chrt_id BIGINT
+	)`
+	
+	_, err := db.Exec(q)
+	common.CheckFatal(err)
+}
+
 func CreateAllTables(db *sql.DB) {
 	CreateDeliveryTable(db)
 	CreatePaymentTable(db)
 	CreateItemsTable(db)
 	CreateOrdersTable(db)
+	CreateOrdersItemsTable(db)
 	fmt.Println("All tables are good!")
 }
 
