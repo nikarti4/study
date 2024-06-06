@@ -147,7 +147,7 @@ func InsertOrder(db *sql.DB, order model.Order_t) {
 
 	//common.CheckFatal(err)
 	if err != nil {
-		fmt.Println("INSERT in orders FAIL - pk not uniq!")
+		fmt.Printf("INSERT in orders FAIL - %v\n", err)
 	} else {
 
 		fmt.Println("INSERT in orders complete!")
@@ -182,7 +182,7 @@ func InsertDelivery(db *sql.DB, delivery model.Delivery_t) {
 
 	//common.CheckFatal(err)
 	if err != nil {
-		fmt.Println("INSERT in delivery FAIL - pk not uniq!")
+		fmt.Printf("INSERT in delivery FAIL - %v\n", err)
 	} else {
 		fmt.Println("INSERT in delivery complete!")
 	}	
@@ -213,13 +213,13 @@ func InsertPayment(db *sql.DB, payment model.Payment_t) {
 
 	//common.CheckFatal(err)
 	if err != nil {
-		fmt.Println("INSERT in payment FAIL - pk not uniq!")
+		fmt.Printf("INSERT in payment FAIL - %v\n", err)
 	} else {
 		fmt.Println("INSERT in payment complete!")
 	}	
 }
 
-func InsertItems(db *sql.DB, items [] model.Items_t) {
+func InsertItems(db *sql.DB, items []model.Items_t) {
 	insert := `INSERT INTO items (
 			chrt_id,
 			track_number,
@@ -234,18 +234,18 @@ func InsertItems(db *sql.DB, items [] model.Items_t) {
 			status
 		)
 		VALUES (
-			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
+			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
 		)`
 	
 	for _, item :=  range items {
 		_, err := db.Exec(insert,
-			item.Chrt_id, item.Track_number, item.Price, item.Name, item.Sale,
+			item.Chrt_id, item.Track_number, item.Price, item.Rid, item.Name, item.Sale, 
 			item.Size, item.Total_price, item.Nm_id, item.Brand, item.Status,
 		)
 
 		//common.CheckFatal(err)
 		if err != nil {
-			fmt.Println("INSERT in items FAIL - pk not uniq!")
+			fmt.Printf("INSERT in items FAIL - %v\n", err)
 		} else {
 			fmt.Println("INSERT in items complete!")
 		}
