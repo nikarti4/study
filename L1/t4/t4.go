@@ -2,48 +2,63 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
+	"os"
+	"os/signal"
+	"sync"
 	"time"
 )
 
-// константы
-const (
-	workMS  = 250 // время "обработки данных" для воркера
-	whileMS = 200 // время одного шага посылки данных в канал
-)
-
-// воркер, принимает номер воркера и данные из канала
-func worker(id int, jobs <-chan int) {
-	for j := range jobs {
-		fmt.Println("worker ", id, " start data ", j)
-		time.Sleep(workMS * time.Millisecond)
-		fmt.Println("worker ", id, " finish data ", j)
-	}
-}
-
 func main() {
 
-	var N, data int
+	var workersCount int
+	var wg sync.WaitGroup
 
-	// ввод количества воркеров
 	fmt.Print("Select number of workers: ")
-	fmt.Scanln(&N)
+	fmt.Scanln(&workersCount)
 
 	// канал с данными
-	ch := make(chan int)
+	taskChan := make(chan int)
+	// канал для завершения горутины
+	signalChan := make(chan os.Signal, 1)
 
-	// бесконечный цикл
-	for {
-		// проходимся по всем воркерам и даем им работы
-		for id := 0; id < N; id++ {
-			go worker(id, ch)
+	// запускаем воркеры
+	for i := 0; i < workersCount; i++ {
+		wg.Add(1)
+		go Worker(i, taskChan, &wg)
+	}
 
+	// читаем данные из канала, пока не придет сигнал на завершение
+	go func() {
+		for {
+			random := rand.Int()
+
+			select {
+
+			case <-signalChan:
+				fmt.Println("\nEND OF PROGRAMM")
+				close(taskChan)
+				fmt.Println("\nCLOSE WORKERS")
+				close(signalChan)
+				return
+
+			default:
+				taskChan <- random
+				time.Sleep(time.Millisecond * 100)
+
+			}
 		}
-		// посылаем новые данные в канал
-		data++
-		ch <- data
-		// вывод текущего шага
-		fmt.Println(data)
-		// задержка для наглядности
-		time.Sleep(whileMS * time.Millisecond)
+	}()
+
+	signal.Notify(signalChan, os.Interrupt)
+	wg.Wait()
+}
+
+func Worker(id int, dataChan <-chan int, wg *sync.WaitGroup) {
+	defer wg.Done()
+	// пока в канал поступают данные
+	for data := range dataChan {
+		fmt.Printf("Worker %d recieve data: %v\n", id, data)
+		time.Sleep(time.Millisecond * 100)
 	}
 }
