@@ -6,7 +6,7 @@ import (
 
 func intersect(a1 []int, a2 []int) []int {
 	// возвращаемое значение
-	var out[]int
+	var out []int
 	// ключ - элемент множества
 	m := make(map[int]struct{})
 
@@ -15,7 +15,7 @@ func intersect(a1 []int, a2 []int) []int {
 		m[v] = struct{}{}
 	}
 
-	// проверяем, есть ли элемент второго подмн. в ключах, 
+	// проверяем, есть ли элемент второго подмн. в ключах,
 	// если есть - добавляем в слайс
 	for _, v := range a2 {
 		_, ok := m[v]

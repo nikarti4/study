@@ -9,7 +9,7 @@ import (
 // структура для конкурентой записи в файл,
 // мьютекс и данные (мапа)
 type MyMap struct {
-	mu sync.Mutex
+	mu   sync.Mutex
 	data map[string]int
 }
 

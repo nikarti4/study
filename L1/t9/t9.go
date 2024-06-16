@@ -5,7 +5,6 @@ import (
 	"sync"
 )
 
-
 func putInCh(val int, ch chan int, wg *sync.WaitGroup) {
 	defer wg.Done()
 	ch <- val
@@ -39,18 +38,17 @@ func main() {
 		}
 
 		close(chX)
-	} ()
+	}()
 
 	// запись из канала в канал квадратов
 	go func() {
 		for out := range chX {
 			wgX2.Add(1)
-			putInCh(out * out, chX2, &wgX2)
+			putInCh(out*out, chX2, &wgX2)
 		}
 
 		close(chX2)
-	} ()
-
+	}()
 
 	// вывод значений канала квадратов
 	for out := range chX2 {

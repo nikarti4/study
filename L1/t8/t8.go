@@ -1,14 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"errors"
-	"strconv"
+	"fmt"
 	"math"
+	"strconv"
 )
 
 // установить для i-го бита числа num значени val
-func SetBit(num * int64, i uint8, val uint8) error {
+func SetBit(num *int64, i uint8, val uint8) error {
 	// обработка ошибки
 	if i > 64 || val > 1 {
 		return errors.New("incorrect parametrs")
@@ -19,9 +19,9 @@ func SetBit(num * int64, i uint8, val uint8) error {
 		mask -= int64(1 << i)
 		// оставляем все биты, кроме i-го бита
 		*num &= mask
-		// ставим бит val 
+		// ставим бит val
 		*num |= int64(val << i)
-	
+
 		return nil
 	}
 }
@@ -33,7 +33,7 @@ func PrintBits(a int64) {
 func main() {
 
 	a := int64(100)
-	
+
 	// до выставки бита
 	fmt.Println("Before")
 	PrintBits(a)

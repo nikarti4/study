@@ -5,7 +5,6 @@ import (
 	"time"
 )
 
-
 func main() {
 
 	// переменная для ввода количества секунд
@@ -13,7 +12,7 @@ func main() {
 
 	// создаем канал с размером буффера в 1
 	ch := make(chan time.Duration, 1)
-	
+
 	// ввод секунд
 	fmt.Print("Select number of seconds: ")
 	fmt.Scanln(&t_str)
@@ -34,7 +33,7 @@ func main() {
 		// посылка в канал
 		ch <- elapsed
 		// чтение из канала
-		temp_ch := <- ch
+		temp_ch := <-ch
 
 		fmt.Println("temp_ch data:", temp_ch)
 	}

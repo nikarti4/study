@@ -1,12 +1,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"time"
-	"context"
 )
 
-// способы остановки 
+// способы остановки
 // - использовать каналы
 // - использовать контекст
 
@@ -51,8 +51,7 @@ func main() {
 				time.Sleep(500 * time.Millisecond)
 			}
 		}
-	} (ctx2)
-
+	}(ctx2)
 
 	time.Sleep(3 * time.Second)
 	cancel()
