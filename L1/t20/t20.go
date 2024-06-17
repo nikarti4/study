@@ -1,16 +1,15 @@
 package main
 
-
 import (
 	"fmt"
-	"strings"
 	"slices"
+	"strings"
 )
 
 func reverseWords(s string) string {
-	
+
 	var out string
-	
+
 	// разбиваем строку на слова
 	words := strings.Fields(s)
 	// меняем местами элементы получившегося слайса

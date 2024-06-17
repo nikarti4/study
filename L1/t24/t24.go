@@ -1,17 +1,17 @@
 package main
 
 import (
-	"t24/point"
-	"math"
 	"fmt"
+	"math"
+	"t24/point"
 )
 
 // расстояние от точки p2 до p1
 func distance(p1, p2 point.Point) float64 {
-	
-	t1 := math.Pow(p2.GetX() - p1.GetX(), 2)
-	t2 := math.Pow(p2.GetY() - p1.GetY(), 2)
-	
+
+	t1 := math.Pow(p2.GetX()-p1.GetX(), 2)
+	t2 := math.Pow(p2.GetY()-p1.GetY(), 2)
+
 	return math.Sqrt(t1 + t2)
 }
 

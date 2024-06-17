@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"math/big"
 	"math"
+	"math/big"
 )
 
 // большие числа можно инициализоравть через

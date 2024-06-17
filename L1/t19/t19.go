@@ -13,7 +13,7 @@ func reverse(s string) string {
 	// при использовании for range
 	// автопреобразование в rune
 	for i, r := range s {
-		temp[len(s) - i - 1] = r
+		temp[len(s)-i-1] = r
 	}
 
 	// обратная конвертация в строку

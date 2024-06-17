@@ -5,15 +5,15 @@ import (
 )
 
 // объект DVI порта
-type DVI struct {}
+type DVI struct{}
 
-// метод DVI 
+// метод DVI
 func (d *DVI) ConnectDVI() {
 	fmt.Println("Connected to DVI !")
 }
 
 // объект HDMI порта
-type HDMI struct {}
+type HDMI struct{}
 
 // метод HDMI, пусть еще будет указан разъем
 func (h *HDMI) ConnectHDMI(port int) {
@@ -56,14 +56,12 @@ func NewHDMIAdapter(h *HDMI) ConnectAdapter {
 }
 
 // объект USB порта
-type USB struct {}
+type USB struct{}
 
 // подключение к USB
-func (u *USB) Connection () {
+func (u *USB) Connection() {
 	fmt.Println("Connected to USB !")
 }
-
-
 
 func main() {
 	// создаем два адаптера
